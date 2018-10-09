@@ -1,0 +1,150 @@
+{% extends "base.html" %} 
+{% block title %} {{user_page}} {% endblock %}
+{% block content %}
+<h1 class="pageTitle" style="text-align: center">User information</h1>
+<div class="row">
+    <div class="col-md-3" style="text-align: center;">
+        <div style="font-size: 20px;">
+            <b>{{ user_page.username }}: </b>
+            {% include "users/avatarform.html" %}
+            <b>{{ user_page }}</b>
+            <hr>
+        </div>
+    </div>
+    <div class="col-md-9 sc-htoDjs hqmlTp">
+        <div id="otherInfo">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button id="otherInfo-tab-1" type="button" class="btn btn-outline-dark">Basic information</button>
+                <button id="otherInfo-tab-2" type="button" class="btn btn-outline-dark">Projects</button>
+            </div>
+            <!-- <ul role="tablist" class="nav nav-tabs">
+                <li role="presentation" >
+                    <a href="#" id="otherInfo-tab-1" role="tab" aria-controls="otherInfo-pane-1">Basic information</a>
+                </li>
+                <li role="presentation" >
+                    <a href="#" id="otherInfo-tab-2" role="tab" aria-controls="otherInfo-pane-2" tabindex="-1">Projects</a>
+                </li>
+            </ul> -->
+            <div id="base-info" class="card-body">
+                <div id="info">
+                    <p class="card-text"><b>Login:</b> {{ user_page.username }}</p>
+                    <p class="card-text"><b>First name:</b> {{ user_page.first_name }}</p>
+                    <p class="card-text"><b>Last name:</b> {{ user_page.last_name }}</p>
+                    <p class="card-text"><b>Email:</b> {{ user_page.email }}</p>
+                    <p class="card-text"><b>Age:</b> {{ user_page.age }}</p>
+                    {% if user.id == user_page.id %}
+                    <button id="edit" type="button" class="btn btn-outline-dark">Edit</button>
+                    {% endif %}
+                </div>
+                <form method="POST" style="display: none;">
+                    {% csrf_token %}
+                    <div class="row form-group">
+                        <label class="col-sm-3 col-12 control-label">Login:</label>
+                        <div class="col-sm-9 col-12">
+                            <input pattern="^[a-zA-Z0-9-.@_]+$" name="username" required="" type="text" class="form-control" value="{{ user_page.username }}">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row form-group">
+                        <label class="col-sm-3 col-12 control-label">First name:</label>
+                        <div class="col-sm-9 col-12">
+                            <input pattern="^[a-zA-ZА-Яа-яЁё]+$" name="first_name" minlength="3" required="" type="text" class="form-control" value="{{ user_page.first_name }}">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row form-group">
+                        <label class="col-sm-3 col-12 control-label">Last name:</label>
+                        <div class="col-sm-9 col-12">
+                            <input pattern="^[a-zA-ZА-Яа-яЁё]+$" name="last_name" minlength="3" required="" type="text" class="form-control" value="{{ user_page.last_name }}">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row form-group">
+                        <label class="col-sm-3 col-12 control-label">Email:</label>
+                        <div class="col-sm-9 col-12">
+                            <input minlength="3" name="email" required="" type="text" class="form-control" value="{{ user_page.email }}">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row form-group">
+                        <label class="col-sm-3 col-12 control-label">Age:</label>
+                        <div class="col-sm-9 col-12">
+                            <input required="" name="age" minlength="1" class="form-control" value="{{ user_page.age }}">
+                        </div>
+                    </div>
+                    <button id="changepass" type="button" class="btn btn-xs btn-default" style="margin: 10px 0px 20px;">Change password</button>
+                    <br>
+                    <div id="newpass" class="collapse">
+                        <div class="well">
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">New password: </label>
+                                    <input pattern="^[a-zA-Z0-9-_!()]+$" name="newPassword" autocomplete="off" type="Password" class="form-control" value="">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Password confirmation: </label>
+                                    <input pattern="^[a-zA-Z0-9-_!()]+$" name="retryPassword" autocomplete="off" type="Password" class="form-control" value="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button id="cancel" type="button" class="btn btn-danger" style="margin-left: 10px;">Cancel</button>
+                </form>
+            </div>
+            <div id="proj-info" class="collapse card-body">
+                {% if projects %}
+                    {% for project in projects %}
+                        <p class="card-text"><b>Title:</b> {{ project.title }}</p>
+                        <p class="card-text"><b>Description:</b> {{ project.description }}</p>
+                        <p class="card-text"><b>Technologies:</b> {% for t in project.technologies.all %} {{ t }} {% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                        <hr>
+                    {% endfor %}
+                {% else %}
+                    <b>Нет проектов</b>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#edit').click(function () {
+            $('#info').hide()
+            $('form').show()
+        })
+
+        $('#cancel').click(function () {
+            $('form').hide()
+            $('#info').show()
+        })
+
+        $('#changepass').click(function () {
+            $('#newpass').show()
+        })
+
+        $('#otherInfo-tab-1').click(function(){
+            $('#base-info').show()
+            $('#proj-info').hide()
+            // $('#proj-info').removeClass('active')
+            // $('#base-info').addClass('active')
+        })
+
+        $('#otherInfo-tab-2').click(function(){
+            $('#base-info').hide()
+            $('#proj-info').show()
+            // $('#base-info').removeClass('active')
+            // $('#proj-info').addClass('active')
+        })
+
+        $('#img').hover(
+            function(){
+                $('#changeAvatar').show();
+            },
+            function(){
+                $('#changeAvatar').hide();
+            }
+        )
+    })
+</script>
+{% endblock %}

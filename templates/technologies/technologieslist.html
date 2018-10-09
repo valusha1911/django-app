@@ -1,0 +1,38 @@
+{% extends "base.html" %} 
+{% block title %} Projects {% endblock %} 
+{% block content %}
+<div class="card" style="background-color: white; border: 1px">
+<pre>{
+    'error': false,
+    'Technologies': [{% for technol in technologies %}
+        {
+            title: {{ technol }},
+            Projects:[ {% for k in technol.projects.all %}
+                {
+                    id: {{ k.id }},
+                    title: {{ k }}
+                }, {% endfor %}         
+            ]
+        }, {% endfor %}
+    ] 
+}</pre>
+</div>
+{% endblock %}
+
+<!-- <html>
+    <body>
+        <ul>Technologies:<br><br>
+            {% for technol in technologies %}
+                <li>{{ technol }} <br>
+                    Projects:
+                    <ul>
+                        {% for k in technol.projects.all %}
+                        <li>{{ k }}</li>
+                        {% endfor %}
+                    </ul>
+                </li><br>
+            {% endfor %}
+        </ul>
+    </body>
+</html> -->
+

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} New technology {% endblock %}
+{% block content %}
+<div class="card" style="width: 550px; margin:100px auto">
+    <h5 class="card-header">New technology</h5>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" style="width: 90px;">Title</span>
+                </div>
+                <input type="text" class="form-control" name="title">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" style="width: 90px;">Projects:</label>
+                </div>
+                <select size="3" multiple class="custom-select" name="projects">
+                    {% for elem_proj in projects %}
+                    <option value="{{elem_proj.id}}"> {{elem_proj.title}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" class="btn btn-primary" value="create">
+        </form>
+    </div>
+</div>
+{% endblock %}

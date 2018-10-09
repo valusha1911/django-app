@@ -1,0 +1,45 @@
+{% extends "base.html" %} 
+{% block title %} New project {% endblock %} 
+{% block content %}
+<div class="card" style="width: 550px; margin:100px auto">
+    <h5 class="card-header">New project</h5>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" style="width: 120px;">Title</span>
+                </div>
+                <input type="text" class="form-control" name="title">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" style="width: 120px;">Description</span>
+                </div>
+                <textarea type="text" class="form-control" name="description"></textarea>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" style="width: 120px;">Users:</label>
+                </div>
+                <select size="3" multiple class="custom-select" name="users">
+                    {% for user in users %}
+                    <option value={{user.id}}> {{user}} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" style="width: 120px;">Technologies:</label>
+                </div>
+                <select size="3" multiple class="custom-select" name="technologies">
+                    {% for technology in techs %}
+                    <option value={{technology.id}}> {{technology.title}} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" class="btn btn-primary" value="create">
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% for project in projects %}
+<tr id="{{project.id}}">
+    <td> {{ project }} </td>
+    <td> {% for tech in project.technologies.all %} {{ tech }}{% if not forloop.last %}, {% endif %} {% endfor %}
+    </td>
+    <td> {% for us in project.users.all %} {{ us.username }}{% if not forloop.last %}, {% endif %} {% endfor %}
+    </td>
+</tr>
+{% endfor %}

@@ -1,0 +1,18 @@
+<div id="img" class="sc-ifAKCX guzUcm">
+    {% if user_page.avatar %}
+        <img alt="avatar" width="200px" src="/media/{{user_page.avatar}}" class="img-rounded" style="border-radius: 10px;">
+    {% else %}
+        <p>Upload an avatar</p>
+    {% endif %}
+    {% if user.id == user_page.id %}
+    <div id="changeAvatar" style="display: none">
+        <div class="changeAvatar well">
+            <form method="POST" action="/account/{{ user_page.id }}/avatar" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input id="avatar" name="avatar" type="file" style="width: 200px" />
+                <button type="submit" class="btn btn-sm btn-default" style="width: 200px">Choose a new avatar</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>

@@ -1,0 +1,24 @@
+{% extends "base.html" %} 
+{% block title %} Projects {% endblock %} 
+{% block content %}
+<div class="card" style="background-color: white; border: 1px">
+<pre>{
+    'error': false, 
+    'Projects':[ {% for i in projects %}
+        { 
+            title: {{ i.title }},
+            description: {{ i.description }},
+            Users:[{% for n in i.users.all %}
+                { 
+                    id: {{ n.id }}
+                    name: {{ n }}
+                    first name: {{ n.first_name }}
+                    last name: {{ n.last_name }}
+                    age: {{ n.age }}
+                },{% endfor %}
+            ]
+        },{% endfor %}
+    ]
+}</pre> 
+</div>
+{% endblock %}

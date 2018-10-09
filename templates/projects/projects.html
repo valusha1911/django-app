@@ -1,0 +1,55 @@
+{% extends "base.html" %} 
+{% block title %} Projects {% endblock %} 
+{% block external_scripts %}
+<script>
+    $(document).ready(function(){
+        function trimStr(s) {
+            s = s.replace(/^\s+/gi, '');
+            s = s.replace(/\s+$/gi, '');
+            return s;
+        };
+
+        $('#search').click(function(){
+            var textToFind = trimStr($('input').val());
+            // $.ajax({url: "ajax_script.js", dataType: "script"});
+            $.ajax({
+                type: "GET", 
+                data: { "text": textToFind },
+                url: "/projects/search/", 
+                // // async: false, 
+                success: function(data){
+                    $('#body-table').html(data);
+                // success: function(result){
+                //     $('#body-table').html(result);
+            }});
+            // see jquery $.ajax
+        });
+    });
+</script>
+{% endblock %}
+{% block content %}
+    <div class="card" style="width: 750px; margin:100px auto">
+        <nav class="navbar navbar-light bg-light form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" name="find" value="">
+            <button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>          
+        </nav>
+        <!-- <div class="form-group" style="background-color: whitesmoke; margin:0;">
+            <input type="text" placeholder="Search" name="find" value="">
+            <button id="search" type="submit">Search</button>
+        </div> -->
+        <table class="table table-bordered table-hover main" style="margin-bottom: 0;">
+            <thead>
+                <tr style="font-weight:bold">
+                    <td scope="col">Projects</td>
+                    <td scope="col">Technologies</td>
+                    <td scope="col">Users</td>
+                </tr>
+            </thead>
+            {% endblock %}
+            {% block table_body %}
+            <tbody id="body-table">
+                {% include "projects/projects_table_list.html" %}
+            </tbody>
+            {% endblock %}
+        </table>
+    </div>
