@@ -17,14 +17,6 @@
                 <button id="otherInfo-tab-1" type="button" class="btn btn-outline-dark">Basic information</button>
                 <button id="otherInfo-tab-2" type="button" class="btn btn-outline-dark">Projects</button>
             </div>
-            <!-- <ul role="tablist" class="nav nav-tabs">
-                <li role="presentation" >
-                    <a href="#" id="otherInfo-tab-1" role="tab" aria-controls="otherInfo-pane-1">Basic information</a>
-                </li>
-                <li role="presentation" >
-                    <a href="#" id="otherInfo-tab-2" role="tab" aria-controls="otherInfo-pane-2" tabindex="-1">Projects</a>
-                </li>
-            </ul> -->
             <div id="base-info" class="card-body">
                 <div id="info">
                     <p class="card-text"><b>Login:</b> {{ user_page.username }}</p>
@@ -120,21 +112,17 @@
         })
 
         $('#changepass').click(function () {
-            $('#newpass').show()
+            $('#newpass').toggleClass('show')
         })
 
         $('#otherInfo-tab-1').click(function(){
             $('#base-info').show()
             $('#proj-info').hide()
-            // $('#proj-info').removeClass('active')
-            // $('#base-info').addClass('active')
         })
 
         $('#otherInfo-tab-2').click(function(){
             $('#base-info').hide()
             $('#proj-info').show()
-            // $('#base-info').removeClass('active')
-            // $('#proj-info').addClass('active')
         })
 
         $('#img').hover(
