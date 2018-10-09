@@ -35,7 +35,7 @@ def preventAuthIfUserExist(func):
 
 
 @is_auth
-def projects_page(request):
+def home(request):
     projects = Project.objects.all()
     return render(request,
                   'projects/projects.html',

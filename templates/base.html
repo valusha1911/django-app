@@ -16,6 +16,7 @@
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap shadow">
         <div class="container nav-item text-nowrap">
             <div class="navbar-header">
+                <a href="{% url 'projects:home' %}" class="navbar-brand" style="color: lightgray">Home</a>
                 <a href="{% url 'users:users-page' %}" class="navbar-brand" style="color: lightgray">Users</a>
                 <a href="{% url 'projects:projects list' %}" class="navbar-brand" style="color: lightgray">Projects</a>
                 <a href="{% url 'projects:technologies list' %}" class="navbar-brand" style="color: lightgray">Technologies</a>
@@ -35,7 +36,7 @@
         </div>
     </nav>
     <div class="container" style="margin:100px auto">
-        {% endif %} {% block content %}{% endblock %} {% block table_body %}{% endblock %}
+        {% endif %} {% block content %}{% endblock %} 
     </div>
     <script>
         $(document).ready(function () {

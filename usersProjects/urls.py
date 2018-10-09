@@ -11,6 +11,6 @@ urlpatterns = [
     path('projects/addtechnology', views.add_technology, name='add technology'),
     path('api/projects/', views.projects_list, name='projects list'),
     path('api/technologies/', views.technologies_list, name='technologies list'),
-    path('projects/', views.projects_page, name='projects'),
     path('projects/search/', views.projects_table, name='projects_search'),
+    path('home/', views.home, name='home'),
 ]

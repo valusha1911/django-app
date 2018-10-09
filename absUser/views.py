@@ -120,7 +120,3 @@ def users_list(request):
                   }
                   )
 
-
-@is_auth
-def home(request):
-    return render(request, 'users/homepage.html')
