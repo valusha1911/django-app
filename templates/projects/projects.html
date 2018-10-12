@@ -9,6 +9,7 @@
             return s;
         };
         var sort = 0
+        var sortNumTechn = 0
         var textToFind = ''
 
         $('#search').click(function () {
@@ -25,11 +26,19 @@
         })
 
         $('#projects').click(function(){
-            // $('#projects').text('Projects &darr; &uarr;')
             var numPage = $('#numberPage').text()
-            sort += 1
+            sort += 1;
+            sortNumTechn = 0;
+            $('#numTechnologies').text('Number of techs');
             if (sort == 3){
+                $('#projects').text('Projects');
                 sort = 0;
+            }
+            else if (sort == 1){
+                $('#projects').text('Projects ↓');
+            }
+            else if (sort == 2){
+                $('#projects').text('Projects ↑');
             }
             $.ajax({
                 type: "GET",
@@ -39,14 +48,40 @@
                     $('#body-table').html(data.projects_table);
                     $('#paginator').html(data.pagination);
                 }
-            })
+            });
+        });
+
+        $('#numTechnologies').click(function(){
+            sortNumTechn += 1;
+            var numPage = $('#numberPage').text();
+            $('#projects').text('Projects');
+            sort = 0;
+            if (sortNumTechn == 3){
+                $('#numTechnologies').text('Number of techs');
+                sortNumTechn = 0;
+            }
+            else if (sortNumTechn == 1){
+                $('#numTechnologies').text('Number of techs ↓');
+            }
+            else if (sortNumTechn == 2){
+                $('#numTechnologies').text('Number of techs ↑');
+            }
+            $.ajax({
+                type: "GET",
+                data: { "sortNumTechn": sortNumTechn, "numPage": numPage },
+                url: "/projects/sort/",
+                success: function (data) {
+                    $('#body-table').html(data.projects_table);
+                    $('#paginator').html(data.pagination);
+                }
+            });
         });
 
         $(document).on('click', '.page-link', function(ev){
             numberPage = $('#numberPage').text();
             $.ajax({
                 type: "GET",
-                data: { "text": textToFind, "sort": sort, "numPage": $(this).attr("pageNumber") },
+                data: { "text": textToFind, "sortNumTechn": sortNumTechn, "sort": sort, "numPage": $(this).attr("pageNumber") },
                 url: '/projects/sort/', //$(this).attr("pageNumber"), 
                 success: function (data) {
                     $('#body-table').html(data.projects_table);
@@ -66,8 +101,9 @@
     <table class="table table-bordered table-hover main" style="margin-bottom: 0;">
         <thead>
             <tr style="font-weight:bold">
-                <td id="projects" scope="col"> Projects</td>
-                <td scope="col">Technologies</td>
+                <td id="projects" scope="col" style="width: 150px;">Projects</td>
+                <td id="numTechnologies" scope="col" style="width: 180px;">Number of techs</td>
+                <td scope="col" style="width: 250px;">Technologies</td>
                 <td scope="col">Users</td>
             </tr>
         </thead>

@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 from django.db.models import Q
 from django.template.loader import render_to_string
+from django.db import models
 
 from absUser.models import User
 from .models import Project, Technology
@@ -55,6 +56,7 @@ def projects_table(request):
     search_text = request.GET.get('text', None)
     projects_sorted = request.GET.get('sort', None)
     page = request.GET.get('numPage', None)
+    sortNumTechn = request.GET.get('sortNumTechn', None)
     projects = Project.objects.all()
     if search_text:
         projects = projects.filter(Q(title__icontains=search_text)
@@ -64,6 +66,11 @@ def projects_table(request):
         projects = projects.order_by('title')
     elif projects_sorted == '2':
         projects = projects.order_by('-title')
+
+    if sortNumTechn == '1':
+        projects = Project.objects.annotate(__count_technologies=models.Count('technologies')).order_by('__count_technologies')
+    elif sortNumTechn == '2':
+        projects = Project.objects.annotate(__count_technologies=models.Count('technologies')).order_by('-__count_technologies')
 
     paginator = Paginator(projects, 5)
     projects = paginator.get_page(page)

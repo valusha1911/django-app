@@ -11,6 +11,5 @@ urlpatterns = [
     path('api/technologies/', views.technologies_list, name='technologies list'),
     path('projects/search/', views.projects_table, name='projects_search'),
     path('projects/sort/', views.projects_table, name='projects_sort'),
-    path('home/page/', views.projects_table, name='home_page'),
     path('home/', views.home, name='home'),
 ]
