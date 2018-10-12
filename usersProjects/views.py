@@ -1,7 +1,9 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.core.paginator import Paginator
 from django.urls import reverse
 from django.db.models import Q
+from django.template.loader import render_to_string
 
 from absUser.models import User
 from .models import Project, Technology
@@ -36,7 +38,10 @@ def preventAuthIfUserExist(func):
 
 @is_auth
 def home(request):
-    projects = Project.objects.all()
+    project_list = Project.objects.all()
+    paginator = Paginator(project_list, 5)
+    page = request.GET.get('page')
+    projects = paginator.get_page(page)
     return render(request,
                   'projects/projects.html',
                   context={
@@ -47,26 +52,38 @@ def home(request):
 
 @is_auth
 def projects_table(request):
-    searchText = request.GET.get('text')
-    projects = Project.objects.all()  # pylint: disable=E1101
-    if searchText:
-        projects = projects.filter(Q(title__icontains=searchText)
-                                   | Q(technologies__title__icontains=searchText)
-                                   | Q(users__username__icontains=searchText)).distinct()
+    search_text = request.GET.get('text', None)
+    projects_sorted = request.GET.get('sort', None)
+    page = request.GET.get('numPage', None)
+    projects = Project.objects.all()
+    if search_text:
+        projects = projects.filter(Q(title__icontains=search_text)
+                                   | Q(technologies__title__icontains=search_text)
+                                   | Q(users__username__icontains=search_text)).distinct()
+    if projects_sorted == '1':
+        projects = projects.order_by('title')
+    elif projects_sorted == '2':
+        projects = projects.order_by('-title')
 
-    return render(request,
-                  'projects/projects_table_list.html',
-                  context={
-                      'projects': projects,
-                  }
-                  )
+    paginator = Paginator(projects, 5)
+    projects = paginator.get_page(page)
+    print('page', page)
+    print('sort', projects_sorted)
+    rendered_table = render_to_string('projects/projects_table_list.html',
+                                      context={'projects': projects, })
+    rendered_pagination = render_to_string('projects/paginator.html',
+                                           context={'projects': projects, })
+    return JsonResponse({
+        "projects_table": rendered_table,
+        "pagination": rendered_pagination
+    })
 
 
 @is_auth
 def detail(request, project_id):
-    proj = Project.objects.get(pk=project_id)  # pylint: disable=E1101
+    proj = Project.objects.get(pk=project_id)
     techn = Technology.objects.filter(
-        projects=proj.id)  # pylint: disable=E1101
+        projects=proj.id)
     return render(request,
                   'projects/detail.html',
                   context={
@@ -103,7 +120,7 @@ def add_project(request):
         form = ProjectForm(request.POST)
         if form.is_valid():
             form.save()
-        return HttpResponseRedirect(reverse('user-page',
+        return HttpResponseRedirect(reverse('users:userpage',
                                             args=[request.user.id]))
     elif request.method == "GET":
         technologies = Technology.objects.all()
@@ -123,7 +140,7 @@ def add_technology(request):
         form = TechnologyForm(request.POST)
         if form.is_valid():
             form.save()
-        return HttpResponseRedirect(reverse('user-page', args=[request.user.id]))
+        return HttpResponseRedirect(reverse('users:userpage', args=[request.user.id]))
     elif request.method == "GET":
         return render(request,
                       'technologies/createTechnology.html',

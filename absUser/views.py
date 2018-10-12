@@ -60,7 +60,7 @@ def signup(request):
     return render(request, 'auth/signup.html')
 
 
-# @is_auth
+@is_auth
 def user_page(request, user_id):
     try:
         form = User.objects.get(id=user_id)
@@ -73,8 +73,6 @@ def user_page(request, user_id):
             if request.POST.get('newPassword'):
                 if request.POST.get('newPassword') == request.POST.get('retryPassword'):
                     form.set_password(request.POST.get('newPassword'))
-                    # user = authenticate(username=request.POST.get('username'), password=request.POST.get('newPassword'))
-                    # login(request, user)
                     update_session_auth_hash(request, form)
             form.save()
             return render(request,
@@ -119,4 +117,3 @@ def users_list(request):
                       'user_list': User.objects.all()
                   }
                   )
-

@@ -16,16 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf import settings
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.conf.urls.static import static
 from usersProjects import urls as project_urls
 from absUser import urls as users_urls
-from .views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(project_urls)),
-    path('users/<int:user_id>/', index, name='user-page'),
     path('', include(users_urls))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

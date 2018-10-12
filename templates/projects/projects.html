@@ -8,16 +8,50 @@
             s = s.replace(/\s+$/gi, '');
             return s;
         };
+        var sort = 0
+        var textToFind = ''
 
         $('#search').click(function () {
-            var textToFind = trimStr($('input').val());
+            textToFind = trimStr($('input').val());
             $.ajax({
                 type: "GET",
                 data: { "text": textToFind },
                 url: "/projects/search/",
                 success: function (data) {
-                    $('#body-table').html(data);
+                    $('#body-table').html(data.projects_table);
+                    $('#paginator').html(data.pagination);
                 }
+            });
+        })
+
+        $('#projects').click(function(){
+            // $('#projects').text('Projects &darr; &uarr;')
+            var numPage = $('#numberPage').text()
+            sort += 1
+            if (sort == 3){
+                sort = 0;
+            }
+            $.ajax({
+                type: "GET",
+                data: { "sort": sort, "numPage": numPage },
+                url: "/projects/sort/",
+                success: function (data) {
+                    $('#body-table').html(data.projects_table);
+                    $('#paginator').html(data.pagination);
+                }
+            })
+        });
+
+        $(document).on('click', '.page-link', function(ev){
+            numberPage = $('#numberPage').text();
+            $.ajax({
+                type: "GET",
+                data: { "text": textToFind, "sort": sort, "numPage": $(this).attr("pageNumber") },
+                url: '/projects/sort/', //$(this).attr("pageNumber"), 
+                success: function (data) {
+                    $('#body-table').html(data.projects_table);
+                    $('#paginator').html(data.pagination);
+                }               
             });
         });
     });
@@ -32,7 +66,7 @@
     <table class="table table-bordered table-hover main" style="margin-bottom: 0;">
         <thead>
             <tr style="font-weight:bold">
-                <td scope="col">Projects</td>
+                <td id="projects" scope="col"> Projects</td>
                 <td scope="col">Technologies</td>
                 <td scope="col">Users</td>
             </tr>
@@ -42,6 +76,8 @@
             {% include "projects/projects_table_list.html" %}
         </tbody>
     </table>
+    <nav id="paginator" aria-label="Page navigation example">
+    {% include "projects/paginator.html" %}
+    </nav>
 </div>
-
 {% endblock %}

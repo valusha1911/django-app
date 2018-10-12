@@ -35,8 +35,9 @@
             </ul>
         </div>
     </nav>
+    {% endif %}
     <div class="container" style="margin:100px auto">
-        {% endif %} {% block content %}{% endblock %} 
+        {% block content %}{% endblock %} 
     </div>
     <script>
         $(document).ready(function () {

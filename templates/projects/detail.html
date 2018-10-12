@@ -7,8 +7,8 @@
         <p class="card-text">Description: {{title.description}}</p>
         <p class="card-text">Users:</p>
         <ul>
-            {% for us in users %}
-                <li> <a href="{% url 'user-page' us.id %}">{{us}}</a></li>
+            {% for user in users %}
+                <li> <a href="{% url 'users:userpage' user.id %}">{{user}}</a></li>
             {% endfor %}
         </ul>
         <p class="card-text">Technologies: {{techn}}</p>
