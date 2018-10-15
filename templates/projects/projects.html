@@ -9,8 +9,8 @@
             return s;
         };
         var sort = 0
-        var sortNumTechn = 0
         var textToFind = ''
+        var numPage = ''
 
         $('#search').click(function () {
             textToFind = trimStr($('input').val());
@@ -26,20 +26,23 @@
         })
 
         $('#projects').click(function(){
-            var numPage = $('#numberPage').text()
-            sort += 1;
-            sortNumTechn = 0;
-            $('#numTechnologies').text('Number of techs');
-            if (sort == 3){
-                $('#projects').text('Projects');
-                sort = 0;
+            numPage = $('#numberPage').text()
+            if ($(this).hasClass('projects-sorted-up')){
+                $('td').removeClass();
+                $(this).addClass('projects-sorted-down');
+                $('span.sort').addClass('collapse');
+                $(this).children('span.down').removeClass('collapse');
             }
-            else if (sort == 1){
-                $('#projects').text('Projects ↓');
+            else if ($(this).hasClass('projects-sorted-down')){
+                $('td').removeClass();
+                $('span.sort').addClass('collapse');
+            } else {
+                $('td').removeClass();
+                $(this).addClass('projects-sorted-up');
+                $('span.sort').addClass('collapse');
+                $(this).children('span.up').removeClass('collapse');
             }
-            else if (sort == 2){
-                $('#projects').text('Projects ↑');
-            }
+            sort = $(this).attr('class')
             $.ajax({
                 type: "GET",
                 data: { "sort": sort, "numPage": numPage },
@@ -52,23 +55,26 @@
         });
 
         $('#numTechnologies').click(function(){
-            sortNumTechn += 1;
-            var numPage = $('#numberPage').text();
-            $('#projects').text('Projects');
-            sort = 0;
-            if (sortNumTechn == 3){
-                $('#numTechnologies').text('Number of techs');
-                sortNumTechn = 0;
+            numPage = $('#numberPage').text();
+            if ($(this).hasClass('num-sorted-up')){
+                $('td').removeClass();
+                $(this).addClass('num-sorted-down');
+                $('span.sort').addClass('collapse');
+                $(this).children('span.down').removeClass('collapse');
             }
-            else if (sortNumTechn == 1){
-                $('#numTechnologies').text('Number of techs ↓');
+            else if ($(this).hasClass('num-sorted-down')){
+                $('td').removeClass();
+                $('span.sort').addClass('collapse');
+            } else {
+                $('td').removeClass();
+                $(this).addClass('num-sorted-up');
+                $('span.sort').addClass('collapse');
+                $(this).children('span.up').removeClass('collapse');
             }
-            else if (sortNumTechn == 2){
-                $('#numTechnologies').text('Number of techs ↑');
-            }
+            sort = $(this).attr('class')
             $.ajax({
                 type: "GET",
-                data: { "sortNumTechn": sortNumTechn, "numPage": numPage },
+                data: { "sort": sort, "numPage": numPage },
                 url: "/projects/sort/",
                 success: function (data) {
                     $('#body-table').html(data.projects_table);
@@ -79,10 +85,11 @@
 
         $(document).on('click', '.page-link', function(ev){
             numberPage = $('#numberPage').text();
+            numPage = $(this).attr("pageNumber");
             $.ajax({
                 type: "GET",
-                data: { "text": textToFind, "sortNumTechn": sortNumTechn, "sort": sort, "numPage": $(this).attr("pageNumber") },
-                url: '/projects/sort/', //$(this).attr("pageNumber"), 
+                data: { "text": textToFind, "sort": sort, "numPage": numPage },
+                url: '/projects/sort/', 
                 success: function (data) {
                     $('#body-table').html(data.projects_table);
                     $('#paginator').html(data.pagination);
@@ -101,10 +108,10 @@
     <table class="table table-bordered table-hover main" style="margin-bottom: 0;">
         <thead>
             <tr style="font-weight:bold">
-                <td id="projects" scope="col" style="width: 150px;">Projects</td>
-                <td id="numTechnologies" scope="col" style="width: 180px;">Number of techs</td>
-                <td scope="col" style="width: 250px;">Technologies</td>
-                <td scope="col">Users</td>
+                <td id="projects" style="width: 150px;">Projects<span class="sort up collapse">&darr;</span><span class="sort down collapse">&uarr;</span></td>
+                <td id="numTechnologies" style="width: 180px;">Number of techs<span class="sort up collapse">&darr;</span><span class="sort down collapse">&uarr;</span></td>
+                <td style="width: 250px;">Technologies</td>
+                <td >Users</td>
             </tr>
         </thead>
 

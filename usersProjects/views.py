@@ -21,22 +21,6 @@ def is_auth(func):
     return wrapper
 
 
-def preventAuthIfUserExist(func):
-    def wrapper(request, *args, **kwargs):
-        # request.hasattr('user') ? request.user :  args
-        # print('args1', dir(args[0]))
-        # print('asd0', request.user)
-        # user = request.user or args[0].user
-        # if user and user.is_authenticated:
-        # print('res', dir(request, 'user'))
-        if hasattr(request, 'user'):
-            print('here1')
-            return HttpResponseRedirect(reverse('users:home'))
-        else:
-            return func(request, *args, **kwargs)
-    return wrapper
-
-
 @is_auth
 def home(request):
     project_list = Project.objects.all()
@@ -51,26 +35,27 @@ def home(request):
                   )
 
 
-@is_auth
 def projects_table(request):
     search_text = request.GET.get('text', None)
     projects_sorted = request.GET.get('sort', None)
-    page = request.GET.get('numPage', None)
-    sortNumTechn = request.GET.get('sortNumTechn', None)
+    page = request.GET.get('numPage', 1)
     projects = Project.objects.all()
+
     if search_text:
         projects = projects.filter(Q(title__icontains=search_text)
                                    | Q(technologies__title__icontains=search_text)
                                    | Q(users__username__icontains=search_text)).distinct()
-    if projects_sorted == '1':
-        projects = projects.order_by('title')
-    elif projects_sorted == '2':
-        projects = projects.order_by('-title')
 
-    if sortNumTechn == '1':
-        projects = Project.objects.annotate(__count_technologies=models.Count('technologies')).order_by('__count_technologies')
-    elif sortNumTechn == '2':
-        projects = Project.objects.annotate(__count_technologies=models.Count('technologies')).order_by('-__count_technologies')
+    if projects_sorted == 'projects-sorted-up':
+        projects = projects.order_by('title')
+    elif projects_sorted == 'projects-sorted-down':
+        projects = projects.order_by('-title')
+    elif projects_sorted == 'num-sorted-up':
+        projects = Project.objects.annotate(__count_technologies=models.Count(
+            'technologies')).order_by('__count_technologies')
+    elif projects_sorted == 'num-sorted-down':
+        projects = Project.objects.annotate(__count_technologies=models.Count(
+            'technologies')).order_by('-__count_technologies')
 
     paginator = Paginator(projects, 5)
     projects = paginator.get_page(page)

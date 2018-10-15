@@ -26,11 +26,11 @@ def preventAuthIfUserExist(func):
         # print('args1', dir(args[0]))
         # print('asd0', request.user)
         # user = request.user or args[0].user
-        # if user and user.is_authenticated:
         # print('res', dir(request, 'user'))
-        if hasattr(request, 'user'):
+        # if hasattr(request, 'user'):
+        if request.user.is_authenticated:
             print('here1')
-            return HttpResponseRedirect(reverse('users:home'))
+            return HttpResponseRedirect(reverse('projects:home'))
         else:
             return func(request, *args, **kwargs)
     return wrapper
