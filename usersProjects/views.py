@@ -1,13 +1,12 @@
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.db.models import Q
 from django.template.loader import render_to_string
-from django.db import models
 
 from absUser.models import User
-from .models import Project, Technology
+from .models import Project, Technology, Like
 from .forms import ProjectForm, TechnologyForm
 
 
@@ -35,38 +34,55 @@ def home(request):
                   )
 
 
-def projects_table(request):
-    search_text = request.GET.get('text', None)
-    projects_sorted = request.GET.get('sort', None)
-    page = request.GET.get('numPage', 1)
-    projects = Project.objects.all()
+def likes(request):
+    if request.method == "POST":
+        like_count = int(request.POST.get('like'))
+        proj_id = request.POST.get('projectId')
 
+        obj, created = Like.objects.get_or_create(
+            users_id__id=request.user.id,
+            projects_id__id=proj_id,
+        )
+        if created:
+            like_count += 1
+            obj.users_id.add(request.user.id)
+            obj.projects_id.add(proj_id)
+            obj.save()
+        else:
+            like_count -= 1
+            obj.delete()
+    return render(request,
+                  'projects/projects_feed.html',
+                  context={
+                      'projects': Project.objects.all(),
+                  }
+                  )
+
+
+def projects_feed(request):
+    search_text = request.GET.get('text', None)
+    page = request.GET.get('numPage', None)
+    projects = Project.objects.all()
     if search_text:
         projects = projects.filter(Q(title__icontains=search_text)
+                                   | Q(description__icontains=search_text)
                                    | Q(technologies__title__icontains=search_text)
-                                   | Q(users__username__icontains=search_text)).distinct()
-
-    if projects_sorted == 'projects-sorted-up':
-        projects = projects.order_by('title')
-    elif projects_sorted == 'projects-sorted-down':
-        projects = projects.order_by('-title')
-    elif projects_sorted == 'num-sorted-up':
-        projects = Project.objects.annotate(__count_technologies=models.Count(
-            'technologies')).order_by('__count_technologies')
-    elif projects_sorted == 'num-sorted-down':
-        projects = Project.objects.annotate(__count_technologies=models.Count(
-            'technologies')).order_by('-__count_technologies')
-
+                                   | Q(users__first_name__icontains=search_text)
+                                   | Q(users__last_name__icontains=search_text)).distinct()
     paginator = Paginator(projects, 5)
     projects = paginator.get_page(page)
-    print('page', page)
-    print('sort', projects_sorted)
-    rendered_table = render_to_string('projects/projects_table_list.html',
-                                      context={'projects': projects, })
+    rendered_body = render_to_string('projects/projects_feed.html',
+                                     context={
+                                         'projects': projects,
+                                     }
+                                     )
     rendered_pagination = render_to_string('projects/paginator.html',
-                                           context={'projects': projects, })
+                                           context={
+                                               'projects': projects,
+                                           }
+                                           )
     return JsonResponse({
-        "projects_table": rendered_table,
+        "projects_body": rendered_body,
         "pagination": rendered_pagination
     })
 
@@ -79,9 +95,8 @@ def detail(request, project_id):
     return render(request,
                   'projects/detail.html',
                   context={
-                      'title': proj,
+                      'proj': proj,
                       'techn': ', '.join([tech.title for tech in techn]),
-                      'users': proj.users.all()
                   }
                   )
 

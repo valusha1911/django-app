@@ -2,12 +2,12 @@
 {% block title %} {{title}} {% endblock %}
 {% block content %}
 <div class="card" style="width: 550px; margin:100px auto">
-    <h5 class="card-header">{{title}}</h5>
+    <h5 class="card-header">{{proj}}</h5>
     <div class="card-body">
-        <p class="card-text">Description: {{title.description}}</p>
+        <p class="card-text">Description: {{proj.description}}</p>
         <p class="card-text">Users:</p>
         <ul>
-            {% for user in users %}
+            {% for user in proj.users.all %}
                 <li> <a href="{% url 'users:userpage' user.id %}">{{user}}</a></li>
             {% endfor %}
         </ul>

@@ -1,6 +1,7 @@
 {% extends "base.html" %} 
 {% block title %} Projects {% endblock %} 
 {% block external_scripts %}
+{% csrf_token %}
 <script>
     $(document).ready(function () {
         function trimStr(s) {
@@ -8,7 +9,6 @@
             s = s.replace(/\s+$/gi, '');
             return s;
         };
-        var sort = 0
         var textToFind = ''
         var numPage = ''
 
@@ -19,79 +19,40 @@
                 data: { "text": textToFind },
                 url: "/projects/search/",
                 success: function (data) {
-                    $('#body-table').html(data.projects_table);
-                    $('#paginator').html(data.pagination);
-                }
-            });
-        })
-
-        $('#projects').click(function(){
-            numPage = $('#numberPage').text()
-            if ($(this).hasClass('projects-sorted-up')){
-                $('td').removeClass();
-                $(this).addClass('projects-sorted-down');
-                $('span.sort').addClass('collapse');
-                $(this).children('span.down').removeClass('collapse');
-            }
-            else if ($(this).hasClass('projects-sorted-down')){
-                $('td').removeClass();
-                $('span.sort').addClass('collapse');
-            } else {
-                $('td').removeClass();
-                $(this).addClass('projects-sorted-up');
-                $('span.sort').addClass('collapse');
-                $(this).children('span.up').removeClass('collapse');
-            }
-            sort = $(this).attr('class')
-            $.ajax({
-                type: "GET",
-                data: { "sort": sort, "numPage": numPage },
-                url: "/projects/sort/",
-                success: function (data) {
-                    $('#body-table').html(data.projects_table);
+                    $('#list-projects').html(data.projects_body);
                     $('#paginator').html(data.pagination);
                 }
             });
         });
 
-        $('#numTechnologies').click(function(){
+        $(document).on('click','.like', function(){
             numPage = $('#numberPage').text();
-            if ($(this).hasClass('num-sorted-up')){
-                $('td').removeClass();
-                $(this).addClass('num-sorted-down');
-                $('span.sort').addClass('collapse');
-                $(this).children('span.down').removeClass('collapse');
-            }
-            else if ($(this).hasClass('num-sorted-down')){
-                $('td').removeClass();
-                $('span.sort').addClass('collapse');
-            } else {
-                $('td').removeClass();
-                $(this).addClass('num-sorted-up');
-                $('span.sort').addClass('collapse');
-                $(this).children('span.up').removeClass('collapse');
-            }
-            sort = $(this).attr('class')
+            var like = +$(this).children('.number-of-likes').text();
             $.ajax({
-                type: "GET",
-                data: { "sort": sort, "numPage": numPage },
-                url: "/projects/sort/",
+                type: "POST",
+                data: { 
+                    "numPage": numPage, 
+                    "like": like, 
+                    "projectId": $(this).attr('id'), 
+                    "csrfmiddlewaretoken": $("[name=csrfmiddlewaretoken]").val(),
+                },
+                url: "/projects/likes/",
                 success: function (data) {
-                    $('#body-table').html(data.projects_table);
+                    $('#list-projects').html(data.projects_body);
                     $('#paginator').html(data.pagination);
-                }
+                },
             });
         });
 
-        $(document).on('click', '.page-link', function(ev){
+        $(document).on('click', '.page-link', function(){
             numberPage = $('#numberPage').text();
             numPage = $(this).attr("pageNumber");
             $.ajax({
                 type: "GET",
-                data: { "text": textToFind, "sort": sort, "numPage": numPage },
+                data: { "text": textToFind, "numPage": numPage },
                 url: '/projects/sort/', 
                 success: function (data) {
-                    $('#body-table').html(data.projects_table);
+                    $('#list-projects').html(data.projects_body);
                     $('#paginator').html(data.pagination);
                 }               
             });
@@ -105,22 +66,12 @@
         <input class="form-control mr-sm-2" type="search" placeholder="Search" name="find" value="">
         <button id="search" class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
     </nav>
-    <table class="table table-bordered table-hover main" style="margin-bottom: 0;">
-        <thead>
-            <tr style="font-weight:bold">
-                <td id="projects" style="width: 150px;">Projects<span class="sort up collapse">&darr;</span><span class="sort down collapse">&uarr;</span></td>
-                <td id="numTechnologies" style="width: 180px;">Number of techs<span class="sort up collapse">&darr;</span><span class="sort down collapse">&uarr;</span></td>
-                <td style="width: 250px;">Technologies</td>
-                <td >Users</td>
-            </tr>
-        </thead>
-
-        <tbody id="body-table">
-            {% include "projects/projects_table_list.html" %}
-        </tbody>
-    </table>
+    <div id="list-projects">
+        {% include "projects/projects_feed.html" %}
+    </div>
     <nav id="paginator" aria-label="Page navigation example">
     {% include "projects/paginator.html" %}
     </nav>
 </div>
 {% endblock %}
+{{ number_like }}
