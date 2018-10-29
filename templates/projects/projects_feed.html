@@ -1,6 +1,6 @@
 {% for project in projects %}
 <div class="card" style="margin: 20px">
-    <div class="card-header">{{ project }}</div>
+    <div class="card-header"> <a href="{% url 'projects:detail' project.id %}">{{ project }}</a></div>
     <div class="card-body">
         <p class="card-text">{{ project.description }}</p>
         <p>

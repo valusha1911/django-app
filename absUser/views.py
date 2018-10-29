@@ -32,7 +32,6 @@ class Login(LoginView):
 
 def signup(request):
     if request.user.is_authenticated:
-        print('here1')
         return HttpResponseRedirect(reverse('projects:home'))
     else:
         if request.method == "POST":
@@ -69,16 +68,14 @@ def user_page(request, user_id):
                           context={
                               'user_page': User.objects.get(id=user_id),
                               'projects': Project.objects.filter(users=request.user.id),
-                          }
-                          )
+                          })
         elif request.method == "GET":
             return render(request,
                           'users/userpage.html',
                           context={
                               'user_page': User.objects.get(id=user_id),
-                              'projects': Project.objects.filter(users=request.user.id)
-                          }
-                          )
+                              'projects': Project.objects.filter(users=request.user.id),
+                          })
     except form.DoesNotExist:
         return HttpResponseNotFound("<h2>Person not found</h2>")
 
@@ -92,9 +89,8 @@ def avatar_form(request, user_id):
                       'users/userpage.html',
                       context={
                           'user_page': User.objects.get(id=user_id),
-                          'projects': Project.objects.filter(users=request.user.id)
-                      }
-                      )
+                          'projects': Project.objects.filter(users=request.user.id),
+                      })
     return render(request, 'avatarform.html')
 
 
@@ -103,6 +99,5 @@ def users_list(request):
     return render(request,
                   'users/users.html',
                   context={
-                      'user_list': User.objects.all()
-                  }
-                  )
+                      'user_list': User.objects.all(),
+                  })

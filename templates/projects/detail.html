@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %} {{title}} {% endblock %}
+{% block title %} {{ project }} {% endblock %}
 {% block content %}
-<div class="card" style="width: 550px; margin:100px auto">
-    <h5 class="card-header">{{proj}}</h5>
+<div class="card" style="width: 750px; margin:100px auto">
+    <h5 class="card-header">{{ project }}</h5>
     <div class="card-body">
-        <p class="card-text">Description: {{proj.description}}</p>
+        <p class="card-text">Description: {{ project.description }}</p>
         <p class="card-text">Users:</p>
         <ul>
-            {% for user in proj.users.all %}
-                <li> <a href="{% url 'users:userpage' user.id %}">{{user}}</a></li>
+            {% for user in project.users.all %}
+                <li> <a href="{% url 'users:userpage' user.id %}">{{ user }}</a></li>
             {% endfor %}
         </ul>
-        <p class="card-text">Technologies: {{techn}}</p>
+        <p class="card-text">Technologies: {{ technologies }}</p>
     </div>
 </div>
 {% endblock %}

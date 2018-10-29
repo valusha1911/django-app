@@ -21,8 +21,7 @@ def home(request):
                   'projects/projects.html',
                   context={
                       'projects': projects,
-                  }
-                  )
+                  })
 
 
 def likes(request):
@@ -46,8 +45,7 @@ def likes(request):
                   'projects/projects_feed.html',
                   context={
                       'projects': Project.objects.all(),
-                  }
-                  )
+                  })
 
 
 def projects_feed(request):
@@ -65,13 +63,11 @@ def projects_feed(request):
     rendered_body = render_to_string('projects/projects_feed.html',
                                      context={
                                          'projects': projects,
-                                     }
-                                     )
+                                     })
     rendered_pagination = render_to_string('projects/paginator.html',
                                            context={
                                                'projects': projects,
-                                           }
-                                           )
+                                           })
     return JsonResponse({
         "projects_body": rendered_body,
         "pagination": rendered_pagination
@@ -80,16 +76,15 @@ def projects_feed(request):
 
 @is_auth
 def detail(request, project_id):
-    proj = Project.objects.get(pk=project_id)
-    techn = Technology.objects.filter(
-        projects=proj.id)
+    project = Project.objects.get(pk=project_id)
+    technologies = Technology.objects.filter(
+        projects=project.id)
     return render(request,
                   'projects/detail.html',
                   context={
-                      'proj': proj,
-                      'techn': ', '.join([tech.title for tech in techn]),
-                  }
-                  )
+                      'project': project,
+                      'technologies': ', '.join([tech.title for tech in technologies]),
+                  })
 
 
 @is_auth
@@ -98,8 +93,7 @@ def projects_list(request):
                   'projects/projectslist.html',
                   context={
                       'projects': Project.objects.all(),
-                  }
-                  )
+                  })
 
 
 @is_auth
@@ -108,8 +102,7 @@ def technologies_list(request):
                   'technologies/technologieslist.html',
                   context={
                       'technologies': Technology.objects.all(),
-                  }
-                  )
+                  })
 
 
 @is_auth
@@ -128,8 +121,7 @@ def add_project(request):
                       context={
                           'users': users,
                           'techs': technologies,
-                      }
-                      )
+                      })
 
 
 @is_auth
@@ -144,5 +136,4 @@ def add_technology(request):
                       'technologies/createTechnology.html',
                       context={
                           'projects': Project.objects.all(),
-                      }
-                      )
+                      })
