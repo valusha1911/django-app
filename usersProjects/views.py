@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.urls import reverse
@@ -8,7 +8,6 @@ from django.template.loader import render_to_string
 from absUser.models import User
 from .models import Project, Technology, Like
 from .forms import ProjectForm, TechnologyForm
-
 
 def is_auth(func):
     def wrapper(request, *args, **kwargs):
