@@ -18,6 +18,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import include
+
 from absUser import urls as users_urls
 from usersProjects import urls as project_urls
 from api import urls as api_urls

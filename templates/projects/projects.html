@@ -1,7 +1,6 @@
 {% extends "base.html" %} 
 {% block title %} Projects {% endblock %} 
 {% block external_scripts %}
-{% csrf_token %}
 <script>
     $(document).ready(function () {
         function trimStr(s) {
@@ -74,4 +73,3 @@
     </nav>
 </div>
 {% endblock %}
-{{ number_like }}

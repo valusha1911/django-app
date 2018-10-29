@@ -6,17 +6,9 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 
 from absUser.models import User
+from absUser.views import is_auth
 from .models import Project, Technology, Like
 from .forms import ProjectForm, TechnologyForm
-
-def is_auth(func):
-    def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return func(request, *args, **kwargs)
-        else:
-            print('here2')
-            return HttpResponseRedirect(reverse('users:login'))
-    return wrapper
 
 
 @is_auth

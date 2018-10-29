@@ -102,28 +102,28 @@
 <script>
     $(document).ready(function () {
         $('#edit').click(function () {
-            $('#info').hide()
-            $('form').show()
-        })
+            $('#info').hide();
+            $('form').show();
+        });
 
         $('#cancel').click(function () {
-            $('form').hide()
-            $('#info').show()
-        })
+            $('form').hide();
+            $('#info').show();
+        });
 
         $('#changepass').click(function () {
-            $('#newpass').toggleClass('show')
-        })
+            $('#newpass').toggleClass('show');
+        });
 
         $('#otherInfo-tab-1').click(function(){
-            $('#base-info').show()
-            $('#proj-info').hide()
-        })
+            $('#base-info').show();
+            $('#proj-info').hide();
+        });
 
         $('#otherInfo-tab-2').click(function(){
-            $('#base-info').hide()
-            $('#proj-info').show()
-        })
+            $('#base-info').hide();
+            $('#proj-info').show();
+        });
 
         $('#img').hover(
             function(){
@@ -132,7 +132,7 @@
             function(){
                 $('#changeAvatar').hide();
             }
-        )
+        );
     })
 </script>
 {% endblock %}

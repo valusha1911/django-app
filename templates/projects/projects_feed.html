@@ -1,5 +1,4 @@
 {% for project in projects %}
-
 <div class="card" style="margin: 20px">
     <div class="card-header">{{ project }}</div>
     <div class="card-body">
@@ -11,6 +10,7 @@
         <p>
             <b>Users:</b> {% for us in project.users.all %} {{ us }}{% if not forloop.last %}, {% endif %} {% endfor %}
         </p>
+        {% csrf_token %}
         {% if project.projects_id.all.count %}
         <button type="button" class="like btn btn-default likes-button" id="{{ project.id }}">
             &#x1f5a4;

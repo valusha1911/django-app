@@ -20,44 +20,33 @@ def is_auth(func):
     return wrapper
 
 
-def preventAuthIfUserExist(func):
-    def wrapper(request, *args, **kwargs):
-        # request.hasattr('user') ? request.user :  args
-        # print('args1', dir(args[0]))
-        # print('asd0', request.user)
-        # user = request.user or args[0].user
-        # print('res', dir(request, 'user'))
-        # if hasattr(request, 'user'):
-        if request.user.is_authenticated:
-            print('here1')
-            return HttpResponseRedirect(reverse('projects:home'))
-        else:
-            return func(request, *args, **kwargs)
-    return wrapper
-
-
 class Login(LoginView):
     template_name = 'auth/signin.html'
 
-    # @preventAuthIfUserExist
     def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('projects:home'))
+        else:
+            return super().dispatch(request, *args, **kwargs)
 
 
-# @preventAuthIfUserExist
 def signup(request):
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            raw_pass = form.cleaned_data.get('password1')
-            raw_username = form.cleaned_data.get('username')
-            user = authenticate(username=raw_username, password=raw_pass)
-            login(request, user)
-            return HttpResponseRedirect(reverse('users:home'))
-    elif request.method == "GET":
-        form = SignUpForm()
-    return render(request, 'auth/signup.html')
+    if request.user.is_authenticated:
+        print('here1')
+        return HttpResponseRedirect(reverse('projects:home'))
+    else:
+        if request.method == "POST":
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                form.save()
+                raw_pass = form.cleaned_data.get('password1')
+                raw_username = form.cleaned_data.get('username')
+                user = authenticate(username=raw_username, password=raw_pass)
+                login(request, user)
+                return HttpResponseRedirect(reverse('users:home'))
+        elif request.method == "GET":
+            form = SignUpForm()
+        return render(request, 'auth/signup.html')
 
 
 @is_auth
